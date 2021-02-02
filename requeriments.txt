@@ -3,6 +3,10 @@ bs4==0.0.1
 certifi==2020.6.20
 chardet==3.0.4
 idna==2.10
+img2pdf==0.4.0
+lxml==4.6.2
+pikepdf==2.5.2
+Pillow==8.1.0
 requests==2.24.0
 soupsieve==2.0.1
 urllib3==1.25.11
