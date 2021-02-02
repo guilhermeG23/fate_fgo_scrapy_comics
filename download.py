@@ -5,43 +5,70 @@ import requests
 import os
 import img2pdf
 from PIL import Image
+import sys
 
-#Links para o site
+"""
+Opcao de escala de cinza
+"""
+gray_scale = False
+try:
+    if sys.argv[1] == "1":
+        gray_scale = True
+except:
+    pass
+
+"""
+Links para o site
+"""
 url = "https://fate-go.us/manga_fgo2/"
 logo = "https://fate-go.us/manga_fgo2/images/common/logo.png"
 
-#Extrair as imagens
+"""
+Extrair as imagens
+"""
 saida = requests.get(url, headers={'User-Agent': 'Custom'})
 html = BeautifulSoup(saida.text, 'html.parser')
 titulos = html.findAll('img')
 
-#Array dos comics existentes
+"""
+Array dos comics existentes
+"""
 comics = []
 
-#Pegar todos os comics
+"""
+Pegar todos os comics
+"""
 for i in titulos:
     if str(str(i).find("Episdoe")) != "-1":
         a = str(i).split("/")
         comics.append(a[3])
 
-#Criar pastas necessarias
+"""
+Criar pastas necessarias
+"""
 if os.path.exists("comics") == False:
     os.mkdir("comics")
 
 if os.path.exists("comics_convertidos") == False:
     os.mkdir("comics_convertidos")
 
-#Buscar todos os valores do comics
+"""
+Buscar todos os valores do comics
+"""
 ja_existem = os.listdir("comics")
 
-#Confirmar se ja existe o logo
+"""
+Confirmar se ja existe o logo
+"""
 try:
     ja_existem.index("comic00.png")
 except:
     wget.download(logo, bar=None)
     os.rename("logo.png", "comics/comic00.png")
 
-#Download dos comics
+"""
+Download dos comics
+"""
 for comic in comics:
     """
     Se der errado o try, ele busca o download
@@ -68,6 +95,8 @@ Convertendo as imagens
 for img in ja_existem:
     im = Image.open("comics\\{}".format(img))
     rgb_im = im.convert('RGB')
+    if gray_scale:
+        rgb_im = rgb_im.convert('L')
     rgb_im.save('comics_convertidos\\{}.jpg'.format(img.split(".")[0]))
 
 """
@@ -81,6 +110,11 @@ for img in ja_existem:
 """
 Convertendo em pdf
 """
-print(lista_imagens)
-with open("comics_fate.pdf","wb") as f:
+nome_arquivo = "comics_fate"
+if gray_scale:
+    nome_arquivo = "{}_cinza.pdf".format(nome_arquivo)
+else:
+    nome_arquivo = "{}_colorido.pdf".format(nome_arquivo)
+
+with open(nome_arquivo,"wb") as f:
 	f.write(img2pdf.convert(lista_imagens))     
