@@ -12,7 +12,7 @@ Opcao de escala de cinza
 """
 gray_scale = False
 try:
-    if sys.argv[1] == "1":
+    if sys.argv[1] == "gray":
         gray_scale = True
 except:
     pass
@@ -20,8 +20,11 @@ except:
 """
 Links para o site
 """
-url = "https://fate-go.us/manga_fgo2/"
-logo = "https://fate-go.us/manga_fgo2/images/common/logo.png"
+url_raiz = "https://fate-go.us/manga_fgo3/"
+#url_raiz = "https://fate-go.us/manga_fgo2/"
+#url_raiz = "https://fate-go.us/manga_fgo/"
+url = url_raiz
+logo = "{}images/common/logo.png".format(url)
 
 """
 Extrair as imagens
@@ -81,12 +84,12 @@ for comic in comics:
         Except busca todos os demais que ficam só nomeados de comic
         """
         try:
-            url = "https://fate-go.us/manga_fgo2/images/{}/comic.png".format(comic)
-            wget.download(url, bar=None)
-            os.rename("comic.png".format(comic), "comics/{}.png".format(comic))
+            urlDownload = "{}images/{}/comic.png".format(url, comic)
+            wget.download(urlDownload, bar=None)
+            os.rename("comic.png", "comics/{}.png".format(comic))
         except:
-            url = "https://fate-go.us/manga_fgo2/images/{}/{}.png".format(comic, comic)
-            wget.download(url, bar=None)
+            urlDownload = "{}images/{}/{}.png".format(url, comic, comic)
+            wget.download(urlDownload, bar=None)
             os.rename("{}.png".format(comic), "comics/{}.png".format(comic))
 
 """
@@ -110,7 +113,8 @@ for img in ja_existem:
 """
 Convertendo em pdf
 """
-nome_arquivo = "comics_fate"
+nome_manga = url_raiz.split("/")[3]
+nome_arquivo = "comics_fate_{}".format(nome_manga)
 if gray_scale:
     nome_arquivo = "{}_cinza.pdf".format(nome_arquivo)
 else:
